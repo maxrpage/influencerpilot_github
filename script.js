@@ -1,16 +1,38 @@
-const influencers = [
-  { name: "Ava Beauty", platform: "Instagram", followers: 45000, engagement: "4.5%", niche: "Beauty" },
-  { name: "FitTom", platform: "TikTok", followers: 32000, engagement: "6.5%", niche: "Fitness" },
-  { name: "GameGuru", platform: "YouTube", followers: 60000, engagement: "3.2%", niche: "Gaming" }
-];
-const tableBody = document.querySelector("#influencer-table tbody");
-influencers.forEach(influencer => {
-  const row = document.createElement("tr");
-  row.innerHTML = `
-    <td>${influencer.name}</td>
-    <td>${influencer.platform}</td>
-    <td>${influencer.followers}</td>
-    <td>${influencer.engagement}</td>
-    <td>${influencer.niche}</td>`;
-  tableBody.appendChild(row);
-});
+// Supabase config
+const SUPABASE_URL = "https://ejvvdrwkucrxpwcfwhco.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVqdnZkcndrdWNyeHB3Y2Z3aGNvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM5NzEyMDIsImV4cCI6MjA2OTU0NzIwMn0.XLflZNyo64aJEAS61mmNvuvpB5RP6iivHchn-dHiYto";
+
+// Load influencers from Supabase
+async function loadInfluencers() {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/influencers?select=*`, {
+    headers: {
+      apikey: SUPABASE_KEY,
+      Authorization: `Bearer ${SUPABASE_KEY}`
+    }
+  });
+  const influencers = await res.json();
+  displayInfluencers(influencers);
+}
+
+// Display influencers in the discovery table
+function displayInfluencers(influencers) {
+  const table = document.getElementById("influencer-table");
+  table.innerHTML = `
+    <tr>
+      <th>Name</th><th>Platform</th><th>Followers</th><th>Engagement</th><th>Niche</th><th>Location</th>
+    </tr>`;
+  influencers.forEach((inf) => {
+    const row = `
+      <tr>
+        <td>${inf.name}</td>
+        <td>${inf.platform}</td>
+        <td>${inf.followers}</td>
+        <td>${(inf.engagement_rate * 100).toFixed(1)}%</td>
+        <td>${inf.niche}</td>
+        <td>${inf.location}</td>
+      </tr>`;
+    table.innerHTML += row;
+  });
+}
+
+window.addEventListener("DOMContentLoaded", loadInfluencers);
