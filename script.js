@@ -1,46 +1,6 @@
-// Supabase config
-const SUPABASE_URL = "https://ejvvdrwkucrxpwcfwhco.supabase.co";
-const SUPABASE_KEY = "...";
-const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-// Load influencers...
-
-// Load influencers from Supabase
-async function loadInfluencers() {
-  const res = await fetch(`${SUPABASE_URL}/rest/v1/influencers?select=*`, {
-    headers: {
-      apikey: SUPABASE_KEY,
-      Authorization: `Bearer ${SUPABASE_KEY}`
-    }
-  });
-  const influencers = await res.json();
-  displayInfluencers(influencers);
-}
-
-// Display influencers in the discovery table
-function displayInfluencers(influencers) {
-  const table = document.getElementById("influencer-table");
-  table.innerHTML = `
-    <tr>
-      <th>Name</th><th>Platform</th><th>Followers</th><th>Engagement</th><th>Niche</th><th>Location</th>
-    </tr>`;
-  influencers.forEach((inf) => {
-    const row = `
-      <tr>
-        <td>${inf.name}</td>
-        <td>${inf.platform}</td>
-        <td>${inf.followers}</td>
-        <td>${(inf.engagement_rate * 100).toFixed(1)}%</td>
-        <td>${inf.niche}</td>
-        <td>${inf.location}</td>
-      </tr>`;
-    table.innerHTML += row;
-  });
-}
-
-
-
-window.addEventListener("DOMContentLoaded", loadInfluencers);
+// Include Supabase client in HTML head if not done already:
+// <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 
 // Supabase config
 const SUPABASE_URL = "https://ejvvdrwkucrxpwcfwhco.supabase.co";
@@ -151,4 +111,3 @@ window.addEventListener("DOMContentLoaded", () => {
   loadSession();
   loadInfluencers();
 });
-
