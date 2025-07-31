@@ -1,10 +1,9 @@
-<!-- Add this in your <head> if not already -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-
-
 // Supabase config
 const SUPABASE_URL = "https://ejvvdrwkucrxpwcfwhco.supabase.co";
-const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVqdnZkcndrdWNyeHB3Y2Z3aGNvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM5NzEyMDIsImV4cCI6MjA2OTU0NzIwMn0.XLflZNyo64aJEAS61mmNvuvpB5RP6iivHchn-dHiYto";
+const SUPABASE_KEY = "...";
+const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+// Load influencers...
 
 // Load influencers from Supabase
 async function loadInfluencers() {
