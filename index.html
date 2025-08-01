@@ -3,44 +3,47 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>InfluencerPilot Dashboard</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>InfluencerPilot – Campaign Dashboard</title>
   <link rel="stylesheet" href="style.css" />
   <style>
     body {
       margin: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #f4f6f8;
+      font-family: 'Helvetica Neue', sans-serif;
+      background-color: #fefefe;
+      color: #2f2f2f;
     }
     .layout {
       display: flex;
       min-height: 100vh;
     }
     .sidebar {
-      width: 220px;
-      background-color: #1f2937;
-      color: white;
+      width: 240px;
+      background-color: #f4e2e7;
+      padding: 2rem 1rem;
+      color: #4a4a4a;
       display: flex;
       flex-direction: column;
-      padding: 1rem;
     }
     .sidebar h2 {
-      margin: 0 0 2rem;
-      font-size: 1.4rem;
-      color: #60a5fa;
+      margin-bottom: 2rem;
+      color: #c56c86;
+      font-weight: bold;
+      font-size: 1.5rem;
     }
     .sidebar a {
-      color: #cbd5e1;
-      margin-bottom: 1rem;
       text-decoration: none;
-      display: block;
+      color: #6b6b6b;
+      margin-bottom: 1rem;
+      font-size: 1rem;
     }
     .sidebar a:hover {
-      color: white;
+      color: #222;
     }
     .content {
       flex: 1;
       padding: 2rem;
+      background-color: #fcfbfd;
     }
     header {
       display: flex;
@@ -51,53 +54,69 @@
     h1 {
       font-size: 1.8rem;
       margin: 0;
-      color: #1f2937;
+      color: #a855f7;
     }
     .btn {
-      padding: 0.5rem 1rem;
-      background-color: #3b82f6;
-      color: white;
+      background-color: #a3d2ca;
+      color: #1f1f1f;
       border: none;
-      border-radius: 6px;
+      padding: 0.6rem 1.2rem;
+      font-size: 1rem;
+      border-radius: 8px;
       cursor: pointer;
     }
     .btn:hover {
-      background-color: #2563eb;
+      background-color: #7dc9bc;
     }
     section {
-      background: white;
+      background-color: white;
       padding: 1.5rem;
-      border-radius: 10px;
+      border-radius: 12px;
       margin-bottom: 2rem;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      box-shadow: 0 3px 8px rgba(0,0,0,0.06);
+    }
+    section h2 {
+      margin-top: 0;
+      color: #a855f7;
     }
     input, textarea {
       width: 100%;
-      padding: 0.6rem;
+      padding: 0.75rem;
       margin-bottom: 1rem;
-      border: 1px solid #ccc;
-      border-radius: 6px;
+      border-radius: 8px;
+      border: 1px solid #ddd;
+      font-size: 1rem;
+      background-color: #fefefe;
+    }
+    input:focus, textarea:focus {
+      border-color: #a3d2ca;
+      outline: none;
     }
     table {
       width: 100%;
       border-collapse: collapse;
       margin-top: 1rem;
+      font-size: 0.95rem;
     }
     th, td {
       padding: 0.75rem;
+      border-bottom: 1px solid #eaeaea;
+    }
+    th {
+      background-color: #f3f0fa;
+      color: #5c5c7a;
       text-align: left;
-      border-bottom: 1px solid #ddd;
     }
     ul {
-      list-style-type: none;
-      padding: 0;
+      padding-left: 1rem;
+      list-style: none;
     }
     li {
-      background: #f9fafb;
-      border: 1px solid #e5e7eb;
-      border-radius: 6px;
+      background-color: #fafafa;
       padding: 1rem;
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.75rem;
+      border-radius: 10px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.03);
     }
   </style>
 </head>
@@ -111,18 +130,17 @@
       <a href="#">Outreach</a>
       <a href="#">Settings</a>
     </aside>
-
     <main class="content">
       <header>
-        <h1>Welcome, <span id="user-email">User</span></h1>
+        <h1>Hello, <span id="user-email">User</span></h1>
         <button class="btn" onclick="signOut()">Log Out</button>
       </header>
 
-      <section id="campaign-section">
-        <h2>Create New Campaign</h2>
+      <section>
+        <h2>Create a New Campaign</h2>
         <input type="text" id="campaign-title" placeholder="Campaign Title" />
         <input type="text" id="campaign-objective" placeholder="Objective" />
-        <textarea id="campaign-brief" placeholder="Campaign Brief"></textarea>
+        <textarea id="campaign-brief" rows="4" placeholder="Campaign Brief"></textarea>
         <button class="btn" onclick="saveCampaign()">Save Campaign</button>
       </section>
 
