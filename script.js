@@ -28,17 +28,20 @@ function displayInfluencers(influencers) {
     <tr>
       <th>Name</th><th>Platform</th><th>Followers</th><th>Engagement</th><th>Niche</th><th>Location</th>
     </tr>`;
-  influencers.forEach(inf => {
-    table.innerHTML += `
-      <tr>
-        <td>${inf.name}</td>
-        <td>${inf.platform}</td>
-        <td>${inf.followers}</td>
-        <td>${(inf.engagement_rate * 100).toFixed(1)}%</td>
-        <td>${inf.niche}</td>
-        <td>${inf.location}</td>
-      </tr>`;
-  });
+influencers.forEach((inf) => {
+  const row = `
+    <tr>
+      <td>${inf.name}</td>
+      <td>${inf.platform}</td>
+      <td>${inf.followers}</td>
+      <td>${(inf.engagement_rate * 100).toFixed(1)}%</td>
+      <td>${inf.niche}</td>
+      <td>${inf.location}</td>
+      <td><button class="btn" onclick="openOutreachForm('${inf.id}', '${inf.name}')">Log Outreach</button></td>
+    </tr>`;
+  table.innerHTML += row;
+});
+
 }
 
 // Sign out
