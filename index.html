@@ -1,43 +1,21 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>InfluencerPilot AI</title>
-  <link rel="stylesheet" href="style.css" />
-</head>
-<body>
-
-  <section id="auth-section">
-    <h2>Login or Sign Up</h2>
-    <input type="email" id="auth-email" placeholder="Email">
-    <input type="password" id="auth-password" placeholder="Password">
-    <button onclick="signUp()">Sign Up</button>
-    <button onclick="signIn()">Log In</button>
-    <p id="auth-status"></p>
-  </section>
-
-  <section id="user-dashboard" style="display:none;">
-    <h3>Welcome, <span id="user-email"></span></h3>
-    <button onclick="signOut()">Log Out</button>
-
-    <h4>Create New Campaign</h4>
-    <input type="text" id="campaign-title" placeholder="Campaign Title"><br>
-    <input type="text" id="campaign-objective" placeholder="Objective"><br>
-    <textarea id="campaign-brief" placeholder="Campaign Brief"></textarea><br>
-    <button onclick="saveCampaign()">Save Campaign</button>
-
-    <h4>Your Campaigns</h4>
-    <ul id="campaign-list"></ul>
-  </section>
-
-  <section>
-    <h2>Influencer Discovery</h2>
-    <table id="influencer-table"></table>
-  </section>
-
-  <!-- Supabase & App Scripts -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-  <script src="script.js"></script>
-</body>
-</html>
+<html><head><script src="https://cdn.tailwindcss.com"></script></head><body><section class="p-6 bg-white rounded-xl shadow-md max-w-2xl mx-auto my-6" id="auth-section">
+<h2>Login or Sign Up</h2>
+<input class="w-full p-2 mb-3 border border-gray-300 rounded" id="auth-email" placeholder="Email" type="email"/>
+<input class="w-full p-2 mb-3 border border-gray-300 rounded" id="auth-password" placeholder="Password" type="password"/>
+<button class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700" onclick="signUp()">Sign Up</button>
+<button class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700" onclick="signIn()">Log In</button>
+<p id="auth-status"></p>
+</section>
+<section class="p-6 bg-white rounded-xl shadow-md max-w-2xl mx-auto my-6" id="user-dashboard" style="display:none;">
+<h3>Welcome, <span id="user-email"></span></h3>
+<button class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700" onclick="signOut()">Log Out</button>
+<h4>Create New Campaign</h4>
+<input class="w-full p-2 mb-3 border border-gray-300 rounded" id="campaign-title" placeholder="Campaign Title" type="text"/><br/>
+<input class="w-full p-2 mb-3 border border-gray-300 rounded" id="campaign-objective" placeholder="Objective" type="text"/><br/>
+<textarea class="w-full p-2 mb-3 border border-gray-300 rounded" id="campaign-brief" placeholder="Campaign Brief"></textarea><br/>
+<button class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700" onclick="saveCampaign()">Save Campaign</button>
+<h4>Your Campaigns</h4>
+<ul class="space-y-2 mt-4 list-disc list-inside" id="campaign-list"></ul>
+</section>
+</body></html>
