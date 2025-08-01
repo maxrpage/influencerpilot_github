@@ -10,8 +10,8 @@
     body {
       margin: 0;
       font-family: 'Helvetica Neue', sans-serif;
-      background-color: #fefefe;
-      color: #2f2f2f;
+      background-color: #fffdfd;
+      color: #343434;
     }
     .layout {
       display: flex;
@@ -19,46 +19,41 @@
     }
     .sidebar {
       width: 240px;
-      background-color: #f4e2e7;
+      background-color: #fef3f5;
       padding: 2rem 1rem;
-      color: #4a4a4a;
+      color: #5c5c5c;
       display: flex;
       flex-direction: column;
+      border-right: 1px solid #f0dbe2;
     }
     .sidebar h2 {
       margin-bottom: 2rem;
-      color: #c56c86;
+      color: #d28a94;
       font-weight: bold;
       font-size: 1.5rem;
     }
     .sidebar a {
       text-decoration: none;
-      color: #6b6b6b;
+      color: #8d8d8d;
       margin-bottom: 1rem;
       font-size: 1rem;
     }
     .sidebar a:hover {
-      color: #222;
+      color: #4a4a4a;
     }
     .content {
       flex: 1;
       padding: 2rem;
-      background-color: #fcfbfd;
-    }
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 2rem;
+      background-color: #fffcfc;
     }
     h1 {
-      font-size: 1.8rem;
-      margin: 0;
-      color: #a855f7;
+      font-size: 1.5rem;
+      color: #7f4c5b;
+      margin-bottom: 1rem;
     }
     .btn {
-      background-color: #a3d2ca;
-      color: #1f1f1f;
+      background-color: #f3c9cf;
+      color: #4a4a4a;
       border: none;
       padding: 0.6rem 1.2rem;
       font-size: 1rem;
@@ -66,18 +61,19 @@
       cursor: pointer;
     }
     .btn:hover {
-      background-color: #7dc9bc;
+      background-color: #ebb4bc;
     }
     section {
       background-color: white;
       padding: 1.5rem;
       border-radius: 12px;
       margin-bottom: 2rem;
-      box-shadow: 0 3px 8px rgba(0,0,0,0.06);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.04);
     }
     section h2 {
       margin-top: 0;
-      color: #a855f7;
+      color: #b06272;
+      font-size: 1.2rem;
     }
     input, textarea {
       width: 100%;
@@ -86,10 +82,10 @@
       border-radius: 8px;
       border: 1px solid #ddd;
       font-size: 1rem;
-      background-color: #fefefe;
+      background-color: #fffafa;
     }
     input:focus, textarea:focus {
-      border-color: #a3d2ca;
+      border-color: #f3c9cf;
       outline: none;
     }
     table {
@@ -100,10 +96,10 @@
     }
     th, td {
       padding: 0.75rem;
-      border-bottom: 1px solid #eaeaea;
+      border-bottom: 1px solid #f0e0e4;
     }
     th {
-      background-color: #f3f0fa;
+      background-color: #fdf2f4;
       color: #5c5c7a;
       text-align: left;
     }
@@ -112,11 +108,11 @@
       list-style: none;
     }
     li {
-      background-color: #fafafa;
+      background-color: #fef6f7;
       padding: 1rem;
       margin-bottom: 0.75rem;
       border-radius: 10px;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
     }
   </style>
 </head>
@@ -131,10 +127,8 @@
       <a href="#">Settings</a>
     </aside>
     <main class="content">
-      <header>
-        <h1>Hello, <span id="user-email">User</span></h1>
-        <button class="btn" onclick="signOut()">Log Out</button>
-      </header>
+      <h1>Hello, <span id="user-email">User</span></h1>
+      <button class="btn" onclick="signOut()">Log Out</button>
 
       <section>
         <h2>Create a New Campaign</h2>
