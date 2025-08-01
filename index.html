@@ -1,22 +1,43 @@
-<section id="auth-section">
-  <h2>Login or Sign Up</h2>
-  <input type="email" id="auth-email" placeholder="Email">
-  <input type="password" id="auth-password" placeholder="Password">
-  <button onclick="signUp()">Sign Up</button>
-  <button onclick="signIn()">Log In</button>
-  <p id="auth-status"></p>
-</section>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>InfluencerPilot AI</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
 
-<section id="user-dashboard" style="display:none;">
-  <h3>Welcome, <span id="user-email"></span></h3>
-  <button onclick="signOut()">Log Out</button>
+  <section id="auth-section">
+    <h2>Login or Sign Up</h2>
+    <input type="email" id="auth-email" placeholder="Email">
+    <input type="password" id="auth-password" placeholder="Password">
+    <button onclick="signUp()">Sign Up</button>
+    <button onclick="signIn()">Log In</button>
+    <p id="auth-status"></p>
+  </section>
 
-  <h4>Create New Campaign</h4>
-  <input type="text" id="campaign-title" placeholder="Campaign Title"><br>
-  <input type="text" id="campaign-objective" placeholder="Objective"><br>
-  <textarea id="campaign-brief" placeholder="Campaign Brief"></textarea><br>
-  <button onclick="saveCampaign()">Save Campaign</button>
+  <section id="user-dashboard" style="display:none;">
+    <h3>Welcome, <span id="user-email"></span></h3>
+    <button onclick="signOut()">Log Out</button>
 
-  <h4>Your Campaigns</h4>
-  <ul id="campaign-list"></ul>
-</section>
+    <h4>Create New Campaign</h4>
+    <input type="text" id="campaign-title" placeholder="Campaign Title"><br>
+    <input type="text" id="campaign-objective" placeholder="Objective"><br>
+    <textarea id="campaign-brief" placeholder="Campaign Brief"></textarea><br>
+    <button onclick="saveCampaign()">Save Campaign</button>
+
+    <h4>Your Campaigns</h4>
+    <ul id="campaign-list"></ul>
+  </section>
+
+  <section>
+    <h2>Influencer Discovery</h2>
+    <table id="influencer-table"></table>
+  </section>
+
+  <!-- Supabase & App Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
