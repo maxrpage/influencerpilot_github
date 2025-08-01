@@ -74,30 +74,30 @@
           <table id="influencer-table"></table>
         </div>
       </section>
-    </main>
-  </div>
+  </main>
+</div>
 
-  <!-- Outreach Modal -->
-  <div id="outreach-modal" style="display:none; position:fixed; top:20%; left:50%; transform:translateX(-50%);
-    background:#fff; padding:1.5rem; border-radius:10px; box-shadow:0 5px 15px rgba(0,0,0,0.1); width:300px; z-index:999;">
-    <h3>Log Outreach to <span id="outreach-influencer-name"></span></h3>
-    <input type="hidden" id="outreach-influencer-id" />
-    <label>Contact Method</label>
-    <input type="text" id="outreach-method" placeholder="Email, DM..." />
-    <label>Status</label>
-    <select id="outreach-status">
-      <option>Contacted</option>
-      <option>Replied</option>
-      <option>No Response</option>
-      <option>Deal Done</option>
-    </select>
-    <label>Notes</label>
-    <textarea id="outreach-notes" placeholder="What did you say?"></textarea>
-    <button onclick="submitOutreach()">Save</button>
-    <button onclick="closeOutreachForm()">Cancel</button>
-  </div>
+<!-- Outreach Modal -->
+<div id="outreach-modal" style="display:none; position:fixed; top:20%; left:50%; transform:translateX(-50%);
+  background:#fff; padding:1.5rem; border-radius:10px; box-shadow:0 5px 15px rgba(0,0,0,0.1); width:300px; z-index:999;">
+  <h3>Log Outreach to <span id="outreach-influencer-name"></span></h3>
+  <input type="hidden" id="outreach-influencer-id" />
+  <label>Contact Method</label>
+  <input type="text" id="outreach-method" placeholder="Email, DM..." />
+  <label>Status</label>
+  <select id="outreach-status">
+    <option>Contacted</option>
+    <option>Replied</option>
+    <option>No Response</option>
+    <option>Deal Done</option>
+  </select>
+  <label>Notes</label>
+  <textarea id="outreach-notes" placeholder="What did you say?"></textarea>
+  <button onclick="submitOutreach()">Save</button>
+  <button onclick="closeOutreachForm()">Cancel</button>
+</div>
 
-  <!-- Load Supabase first -->
+<!-- Scripts -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 <script src="script.js"></script>
 </body>
