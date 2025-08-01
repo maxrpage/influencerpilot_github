@@ -1,6 +1,7 @@
 
 const SUPABASE_URL = "https://ejvvdrwkucrxpwcfwhco.supabase.co";
-const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...REAL_KEY_HERE";
+
 let supabase;
 
 window.onload = () => {
