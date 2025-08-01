@@ -4,46 +4,79 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>InfluencerPilot AI</title>
+  <title>InfluencerPilot Dashboard</title>
   <link rel="stylesheet" href="style.css" />
   <style>
     body {
-      font-family: Arial, sans-serif;
-      margin: 2rem;
-      background-color: #f9f9f9;
-      color: #333;
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f4f6f8;
+    }
+    .layout {
+      display: flex;
+      min-height: 100vh;
+    }
+    .sidebar {
+      width: 220px;
+      background-color: #1f2937;
+      color: white;
+      display: flex;
+      flex-direction: column;
+      padding: 1rem;
+    }
+    .sidebar h2 {
+      margin: 0 0 2rem;
+      font-size: 1.4rem;
+      color: #60a5fa;
+    }
+    .sidebar a {
+      color: #cbd5e1;
+      margin-bottom: 1rem;
+      text-decoration: none;
+      display: block;
+    }
+    .sidebar a:hover {
+      color: white;
+    }
+    .content {
+      flex: 1;
+      padding: 2rem;
+    }
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+    h1 {
+      font-size: 1.8rem;
+      margin: 0;
+      color: #1f2937;
+    }
+    .btn {
+      padding: 0.5rem 1rem;
+      background-color: #3b82f6;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .btn:hover {
+      background-color: #2563eb;
     }
     section {
       background: white;
       padding: 1.5rem;
       border-radius: 10px;
       margin-bottom: 2rem;
-      box-shadow: 0 0 10px rgba(0,0,0,0.05);
-    }
-    h2, h3, h4 {
-      color: #222;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     }
     input, textarea {
       width: 100%;
-      padding: 0.5rem;
-      margin-top: 0.5rem;
+      padding: 0.6rem;
       margin-bottom: 1rem;
-      border-radius: 5px;
       border: 1px solid #ccc;
-      font-size: 1rem;
-    }
-    button {
-      padding: 0.6rem 1.2rem;
-      border: none;
-      border-radius: 5px;
-      background-color: #0077cc;
-      color: white;
-      font-size: 1rem;
-      cursor: pointer;
-      margin-right: 0.5rem;
-    }
-    button:hover {
-      background-color: #005fa3;
+      border-radius: 6px;
     }
     table {
       width: 100%;
@@ -56,42 +89,54 @@
       border-bottom: 1px solid #ddd;
     }
     ul {
-      padding-left: 1.2rem;
+      list-style-type: none;
+      padding: 0;
     }
     li {
-      margin-bottom: 1rem;
+      background: #f9fafb;
+      border: 1px solid #e5e7eb;
+      border-radius: 6px;
+      padding: 1rem;
+      margin-bottom: 0.5rem;
     }
   </style>
 </head>
 <body>
+  <div class="layout">
+    <aside class="sidebar">
+      <h2>InfluencerPilot</h2>
+      <a href="#">Dashboard</a>
+      <a href="#">Campaigns</a>
+      <a href="#">Influencers</a>
+      <a href="#">Outreach</a>
+      <a href="#">Settings</a>
+    </aside>
 
-  <section id="auth-section">
-    <h2>Login or Sign Up</h2>
-    <input type="email" id="auth-email" placeholder="Email">
-    <input type="password" id="auth-password" placeholder="Password">
-    <button onclick="signUp()">Sign Up</button>
-    <button onclick="signIn()">Log In</button>
-    <p id="auth-status"></p>
-  </section>
+    <main class="content">
+      <header>
+        <h1>Welcome, <span id="user-email">User</span></h1>
+        <button class="btn" onclick="signOut()">Log Out</button>
+      </header>
 
-  <section id="user-dashboard" style="display:none;">
-    <h3>Welcome, <span id="user-email"></span></h3>
-    <button onclick="signOut()">Log Out</button>
+      <section id="campaign-section">
+        <h2>Create New Campaign</h2>
+        <input type="text" id="campaign-title" placeholder="Campaign Title" />
+        <input type="text" id="campaign-objective" placeholder="Objective" />
+        <textarea id="campaign-brief" placeholder="Campaign Brief"></textarea>
+        <button class="btn" onclick="saveCampaign()">Save Campaign</button>
+      </section>
 
-    <h4>Create New Campaign</h4>
-    <input type="text" id="campaign-title" placeholder="Campaign Title">
-    <input type="text" id="campaign-objective" placeholder="Objective">
-    <textarea id="campaign-brief" placeholder="Campaign Brief"></textarea>
-    <button onclick="saveCampaign()">Save Campaign</button>
+      <section>
+        <h2>Your Campaigns</h2>
+        <ul id="campaign-list"></ul>
+      </section>
 
-    <h4>Your Campaigns</h4>
-    <ul id="campaign-list"></ul>
-  </section>
-
-  <section>
-    <h2>Influencer Discovery</h2>
-    <table id="influencer-table"></table>
-  </section>
+      <section>
+        <h2>Influencer Discovery</h2>
+        <table id="influencer-table"></table>
+      </section>
+    </main>
+  </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
   <script src="script.js"></script>
