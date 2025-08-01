@@ -1,23 +1,25 @@
 
-// Supabase setup
 const SUPABASE_URL = "https://ejvvdrwkucrxpwcfwhco.supabase.co";
-const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVqdnZkcndrdWNyeHB3Y2Z3aGNvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM5NzEyMDIsImV4cCI6MjA2OTU0NzIwMn0.XLflZNyo64aJEAS61mmNvuvpB5RP6iivHchn-dHiYto";
-const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...";
+let supabase;
+
+window.addEventListener("load", () => {
+  supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  loadInfluencers(); // now safe
+});
 
 // ========== AUTH ==========
 
 async function signUp() {
+  if (!supabase) return alert("Supabase not ready");
   const email = document.getElementById("auth-email").value;
   const password = document.getElementById("auth-password").value;
   const { error } = await supabase.auth.signUp({ email, password });
-  if (error) {
-    document.getElementById("auth-status").textContent = error.message;
-  } else {
-    document.getElementById("auth-status").textContent = "Check your email for confirmation link.";
-  }
+  document.getElementById("auth-status").textContent = error ? error.message : "Check your email to confirm.";
 }
 
 async function signIn() {
+  if (!supabase) return alert("Supabase not ready");
   const email = document.getElementById("auth-email").value;
   const password = document.getElementById("auth-password").value;
   const { error } = await supabase.auth.signInWithPassword({ email, password });
@@ -32,6 +34,7 @@ async function signIn() {
 }
 
 function signOut() {
+  if (!supabase) return;
   supabase.auth.signOut();
   document.getElementById("auth-section").style.display = "block";
   document.getElementById("user-dashboard").style.display = "none";
@@ -41,71 +44,45 @@ function signOut() {
 // ========== CAMPAIGNS ==========
 
 async function saveCampaign() {
+  if (!supabase) return;
   const title = document.getElementById("campaign-title").value;
   const objective = document.getElementById("campaign-objective").value;
   const brief = document.getElementById("campaign-brief").value;
 
-  const {
-    data: { user }
-  } = await supabase.auth.getUser();
+  const { data: { user } } = await supabase.auth.getUser();
+  const { error } = await supabase.from("campaigns").insert([{ user_id: user.id, title, objective, brief }]);
 
-  const { error } = await supabase.from("campaigns").insert([
-    {
-      user_id: user.id,
-      title,
-      objective,
-      brief
-    }
-  ]);
-
-  if (error) {
-    alert("Error saving campaign: " + error.message);
-  } else {
+  if (error) alert("Error saving campaign: " + error.message);
+  else {
     alert("Campaign saved!");
     loadCampaigns();
   }
 }
 
 async function loadCampaigns() {
-  const {
-    data: { user }
-  } = await supabase.auth.getUser();
-
-  const { data, error } = await supabase
-    .from("campaigns")
-    .select("*")
-    .eq("user_id", user.id)
-    .order("created_at", { ascending: false });
+  if (!supabase) return;
+  const { data: { user } } = await supabase.auth.getUser();
+  const { data, error } = await supabase.from("campaigns").select("*").eq("user_id", user.id).order("created_at", { ascending: false });
 
   const list = document.getElementById("campaign-list");
-  list.innerHTML = "";
-
-  if (error) {
-    list.innerHTML = "<li>Error loading campaigns.</li>";
-  } else {
-    data.forEach((c) => {
-      const item = document.createElement("li");
-      item.textContent = c.title + " – " + c.objective;
-      list.appendChild(item);
-    });
-  }
+  list.innerHTML = error ? "<li>Error loading campaigns.</li>" : "";
+  if (data) data.forEach((c) => {
+    const item = document.createElement("li");
+    item.textContent = `${c.title} – ${c.objective}`;
+    list.appendChild(item);
+  });
 }
 
 // ========== INFLUENCERS ==========
 
 async function loadInfluencers() {
+  if (!supabase) return;
   const res = await fetch(`${SUPABASE_URL}/rest/v1/influencers?select=*`, {
-    headers: {
-      apikey: SUPABASE_KEY,
-      Authorization: `Bearer ${SUPABASE_KEY}`
-    }
+    headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` }
   });
   const data = await res.json();
-  if (Array.isArray(data)) {
-    displayInfluencers(data);
-  } else {
-    console.error("Expected array but got:", data);
-  }
+  if (Array.isArray(data)) displayInfluencers(data);
+  else console.error("Expected array but got:", data);
 }
 
 function displayInfluencers(influencers) {
@@ -142,34 +119,18 @@ function closeOutreachForm() {
 }
 
 async function submitOutreach() {
+  if (!supabase) return;
   const influencerId = document.getElementById("outreach-influencer-id").value;
   const contactMethod = document.getElementById("outreach-method").value;
   const notes = document.getElementById("outreach-notes").value;
   const status = document.getElementById("outreach-status").value;
 
-  const {
-    data: { user }
-  } = await supabase.auth.getUser();
+  const { data: { user } } = await supabase.auth.getUser();
+  const { error } = await supabase.from("outreach").insert([{ user_id: user.id, influencer_id: influencerId, contact_method: contactMethod, notes, status }]);
 
-  const { error } = await supabase.from("outreach").insert([
-    {
-      user_id: user.id,
-      influencer_id: influencerId,
-      contact_method: contactMethod,
-      notes,
-      status
-    }
-  ]);
-
-  if (error) {
-    alert("Failed to log outreach: " + error.message);
-  } else {
+  if (error) alert("Failed to log outreach: " + error.message);
+  else {
     alert("Outreach logged!");
     closeOutreachForm();
   }
 }
-
-window.addEventListener("DOMContentLoaded", () => {
-  loadInfluencers();
-});
- 
