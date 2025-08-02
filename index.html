@@ -1,118 +1,54 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>InfluencerPilot</title>
-  <style>
-    body { font-family: sans-serif; background: #fffdfd; margin: 0; padding: 0; }
-    .layout { display: flex; min-height: 100vh; }
-    .sidebar {
-      width: 220px; background: #fceef1; padding: 1.5rem; border-right: 1px solid #f3d6dc;
-    }
-    .sidebar h2 { color: #cc6c84; margin-bottom: 2rem; }
-    .sidebar a { display: block; margin-bottom: 1rem; text-decoration: none; color: #666; }
-    .content { flex: 1; padding: 2rem; }
-    h1 { color: #b06272; }
-    .btn {
-      background: #f3c9cf; color: #333; padding: 0.6rem 1rem; border: none;
-      border-radius: 6px; cursor: pointer; margin-bottom: 1rem;
-    }
-    .section {
-      background: #fff; padding: 1rem 1.5rem; margin-bottom: 2rem;
-      border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-    }
-    input, textarea, select {
-      width: 100%; padding: 0.7rem; margin-bottom: 1rem;
-      border-radius: 6px; border: 1px solid #ddd;
-    }
-    table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
-    th, td {
-      text-align: left; padding: 0.7rem; border-bottom: 1px solid #eee;
-    }
-    th { background: #fdf1f3; color: #666; }
-  </style>
+  <title>InfluencerPilot Dashboard</title>
+  <link rel="stylesheet" href="style.css"/>
 </head>
 <body>
-  <div class="layout">
-    <aside class="sidebar">
-      <h2>InfluencerPilot</h2>
-      <a href="#">Dashboard</a>
-      <a href="#">Campaigns</a>
-      <a href="#">Influencers</a>
-    </aside>
-    <main class="content">
-      <section id="auth-section">
-        <h1>Login or Sign Up</h1>
-        <input type="email" id="auth-email" placeholder="Email">
-        <input type="password" id="auth-password" placeholder="Password">
-        <button class="btn" onclick="signUp()">Sign Up</button>
-        <button class="btn" onclick="signIn()">Log In</button>
-        <p id="auth-status"></p>
-      </section>
+  <div id="auth-section">
+    <h2>Welcome to InfluencerPilot</h2>
+    <button onclick="client.auth.signInWithOAuth({ provider: 'google' })">Log in with Google</button>
+  </div>
 
-      <section id="user-dashboard" style="display:none;">
-        <h1>Hello, <span id="user-email">User</span></h1>
-        <button class="btn" onclick="signOut()">Log Out</button>
+  <div id="user-dashboard" style="display: none;">
+    <h3>Hello, <span id="user-email"></span></h3>
 
-        <div class="section">
-          <h2>Create New Campaign</h2>
-          <input type="text" id="campaign-title" placeholder="Campaign Title">
-          <input type="text" id="campaign-objective" placeholder="Objective">
-          <textarea id="campaign-brief" placeholder="Campaign Brief"></textarea>
-          <button class="btn" onclick="saveCampaign()">Save Campaign</button>
-        </div>
+    <section>
+      <h4>Discover Influencers</h4>
+      <table id="influencer-table"></table>
+      <select id="status-select">
+        <option value="Not Contacted">Not Contacted</option>
+        <option value="Emailed">Emailed</option>
+        <option value="Negotiating">Negotiating</option>
+        <option value="Confirmed">Confirmed</option>
+      </select>
+      <button onclick="saveSelectedInfluencers()">Attach to Campaign</button>
+    </section>
 
-        <div class="section">
-          <h2>Your Campaigns</h2>
-          <ul id="campaign-list"></ul>
-        </div>
+    <section>
+      <h4>Outreach Progress</h4>
+      <ul id="campaign-influencer-list"></ul>
+    </section>
 
-        <div class="section">
-          <h2>Influencer Discovery</h2>
-          <table id="influencer-table">
-  <tr>
-    <th>Select</th>
-    <th>Name</th><th>Platform</th><th>Followers</th><th>Engagement</th><th>Niche</th><th>Location</th><th>Status</th>
-  </tr>
-</table>
-<button class="btn" onclick="saveSelectedInfluencers()">Attach to Campaign</button>
+    <section>
+      <h4>📈 Campaign Summary</h4>
+      <div id="summary-metrics">Loading...</div>
+    </section>
 
-        </div>
-      </section>
-  </main>
-</div>
+    <section>
+      <h4>📩 Outreach Email Generator</h4>
+      <label for="email-influencer-select">Choose Influencer:</label>
+      <select id="email-influencer-select"></select>
+      <button onclick="generateOutreachEmail()">Generate Email</button>
+      <pre id="email-output" style="background: #f4f4f4; padding: 1em;"></pre>
+    </section>
 
-<!-- Outreach Modal -->
-<div id="outreach-modal" style="display:none; position:fixed; top:20%; left:50%; transform:translateX(-50%);
-  background:#fff; padding:1.5rem; border-radius:10px; box-shadow:0 5px 15px rgba(0,0,0,0.1); width:300px; z-index:999;">
-  <h3>Log Outreach to <span id="outreach-influencer-name"></span></h3>
-  <input type="hidden" id="outreach-influencer-id" />
-  <label>Contact Method</label>
-  <input type="text" id="outreach-method" placeholder="Email, DM..." />
-  <label>Status</label>
-  <select id="outreach-status">
-    <option>Contacted</option>
-    <option>Replied</option>
-    <option>No Response</option>
-    <option>Deal Done</option>
-  </select>
-  <label>Notes</label>
-  <textarea id="outreach-notes" placeholder="What did you say?"></textarea>
-  <button onclick="submitOutreach()">Save</button>
-  <button onclick="closeOutreachForm()">Cancel</button>
-</div>
-  
-<h4>Outreach Progress</h4>
-<ul id="campaign-influencer-list"></ul>
+    <button onclick="exportCampaignCSV()">Export Outreach CSV</button>
+  </div>
 
-<!-- Scripts -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-<script src="script.js"></script>
-
-<button onclick="exportCampaignCSV()">Export Outreach CSV</button>
-
-
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <script src="script.js" defer></script>
 </body>
 </html>

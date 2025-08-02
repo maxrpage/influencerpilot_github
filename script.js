@@ -1,4 +1,3 @@
-
 // Supabase config
 const SUPABASE_URL = "https://ejvvdrwkucrxpwcfwhco.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVqdnZkcndrdWNyeHB3Y2Z3aGNvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM5NzEyMDIsImV4cCI6MjA2OTU0NzIwMn0.XLflZNyo64aJEAS61mmNvuvpB5RP6iivHchn-dHiYto";
@@ -195,3 +194,61 @@ window.onload = function () {
     }
   });
 };
+
+// Load influencer options for email generator
+async function populateInfluencerDropdown() {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/influencers?select=*`, {
+    headers: {
+      apikey: SUPABASE_KEY,
+      Authorization: `Bearer ${SUPABASE_KEY}`
+    }
+  });
+  const influencers = await res.json();
+  const dropdown = document.getElementById("email-influencer-select");
+  if (!dropdown) return;
+  dropdown.innerHTML = influencers.map(inf => 
+    `<option value="${inf.id}" data-name="${inf.name}" data-platform="${inf.platform}" data-niche="${inf.niche}">${inf.name} (${inf.platform})</option>`
+  ).join('');
+}
+
+// Generate outreach email text
+window.generateOutreachEmail = function () {
+  const select = document.getElementById("email-influencer-select");
+  const selected = select.options[select.selectedIndex];
+  const name = selected.getAttribute("data-name");
+  const platform = selected.getAttribute("data-platform");
+  const niche = selected.getAttribute("data-niche");
+
+  const message = `Hi ${name},
+
+I've been following your content on ${platform}, and I'm really impressed by your work in the ${niche} space. I’m reaching out about a collaboration opportunity that aligns with your brand and values. Let me know if you’d be open to chatting more!
+
+Best,
+[Your Name]`;
+
+  document.getElementById("email-output").textContent = message;
+};
+
+
+// Campaign summary
+async function loadCampaignSummary(campaignId) {
+  const { data, error } = await client
+    .from("campaign_influencers")
+    .select("status");
+
+  if (error || !data) return;
+
+  const total = data.length;
+  const confirmed = data.filter(d => d.status === "Confirmed").length;
+  const emailed = data.filter(d => d.status === "Emailed").length;
+  const negotiating = data.filter(d => d.status === "Negotiating").length;
+
+  document.getElementById("summary-metrics").innerHTML = `
+    <ul>
+      <li><strong>Total:</strong> ${total}</li>
+      <li><strong>Confirmed:</strong> ${confirmed}</li>
+      <li><strong>Emailed:</strong> ${emailed}</li>
+      <li><strong>Negotiating:</strong> ${negotiating}</li>
+    </ul>
+  `;
+}
