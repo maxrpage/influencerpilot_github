@@ -109,25 +109,33 @@ async function loadCampaignInfluencers(campaignId) {
   const list = document.getElementById("campaign-influencer-list");
   if (!list) return;
   list.innerHTML = "";
-  if (error) return (list.innerHTML = "<li>Error loading outreach data.</li>");
+
+  if (error) {
+    list.innerHTML = "<li>Error loading outreach data.</li>";
+    return;
+  }
 
   data.forEach(entry => {
     const li = document.createElement("li");
+
     if (!entry.influencer) {
       li.innerHTML = `<em>Influencer missing or deleted</em>`;
     } else {
       li.innerHTML = `
-        <strong>${entry.influencer.name}</strong> (${entry.influencer.platform}) –`
-      <select onchange="updateInfluencerStatus(this)" data-id="${entry.id}">
-        <option value="Not Contacted" ${entry.status === "Not Contacted" ? "selected" : ""}>Not Contacted</option>
-        <option value="Emailed" ${entry.status === "Emailed" ? "selected" : ""}>Emailed</option>
-        <option value="Negotiating" ${entry.status === "Negotiating" ? "selected" : ""}>Negotiating</option>
-        <option value="Confirmed" ${entry.status === "Confirmed" ? "selected" : ""}>Confirmed</option>
-      </select>
-    `;
+        <strong>${entry.influencer.name}</strong> (${entry.influencer.platform}) –
+        <select onchange="updateInfluencerStatus(this)" data-id="${entry.id}">
+          <option value="Not Contacted" ${entry.status === "Not Contacted" ? "selected" : ""}>Not Contacted</option>
+          <option value="Emailed" ${entry.status === "Emailed" ? "selected" : ""}>Emailed</option>
+          <option value="Negotiating" ${entry.status === "Negotiating" ? "selected" : ""}>Negotiating</option>
+          <option value="Confirmed" ${entry.status === "Confirmed" ? "selected" : ""}>Confirmed</option>
+        </select>
+      `;
+    }
+
     list.appendChild(li);
   });
 }
+
 
 // Export outreach progress as CSV
 window.exportCampaignCSV = async function () {
