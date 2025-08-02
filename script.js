@@ -108,6 +108,7 @@ async function loadCampaignInfluencers(campaignId) {
     .eq("campaign_id", campaignId);
 
   const list = document.getElementById("campaign-influencer-list");
+  if (!list) return;
   list.innerHTML = "";
   if (error) return (list.innerHTML = "<li>Error loading outreach data.</li>");
 
@@ -125,6 +126,53 @@ async function loadCampaignInfluencers(campaignId) {
     list.appendChild(li);
   });
 }
+
+// Export outreach progress as CSV
+window.exportCampaignCSV = async function () {
+  const { data: session } = await client.auth.getSession();
+  const user = session.session?.user;
+  if (!user) return alert("You must be logged in.");
+
+  const { data: campaigns } = await client.from("campaigns")
+    .select("id")
+    .eq("user_id", user.id)
+    .order("created_at", { ascending: false })
+    .limit(1);
+
+  const campaign = campaigns?.[0];
+  if (!campaign) return alert("No campaign found.");
+
+  const { data, error } = await client
+    .from("campaign_influencers")
+    .select("status, influencer:influencer_id(name, platform, followers, niche, location)")
+    .eq("campaign_id", campaign.id);
+
+  if (error || !data) {
+    console.error(error);
+    return alert("Failed to fetch campaign data.");
+  }
+
+  const rows = [["Name", "Platform", "Followers", "Niche", "Location", "Status"]];
+  data.forEach(entry => {
+    rows.push([
+      entry.influencer.name,
+      entry.influencer.platform,
+      entry.influencer.followers,
+      entry.influencer.niche,
+      entry.influencer.location,
+      entry.status
+    ]);
+  });
+
+  const csvContent = "data:text/csv;charset=utf-8," + rows.map(e => e.join(",")).join("\n");
+  const encodedUri = encodeURI(csvContent);
+  const link = document.createElement("a");
+  link.setAttribute("href", encodedUri);
+  link.setAttribute("download", "campaign_outreach.csv");
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+};
 
 // Load session and campaigns on page load
 window.onload = function () {
@@ -147,5 +195,3 @@ window.onload = function () {
     }
   });
 };
-
-<button onclick="exportCampaignCSV()">Export Outreach CSV</button>
