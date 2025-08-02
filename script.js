@@ -108,7 +108,7 @@ function displayInfluencers(influencers) {
 }
 
 // Save selected influencers and statuses to current campaign
-async function saveSelectedInfluencers() {
+window.saveSelectedInfluencers = async function () {
   const checkboxes = document.querySelectorAll(".influencer-check:checked");
   const { data } = await client.auth.getSession();
   const user = data.session?.user;
