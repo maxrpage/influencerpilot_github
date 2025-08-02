@@ -1,81 +1,22 @@
 
+// Supabase config
 const SUPABASE_URL = "https://ejvvdrwkucrxpwcfwhco.supabase.co";
 const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVqdnZkcndrdWNyeHB3Y2Z3aGNvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTM5NzEyMDIsImV4cCI6MjA2OTU0NzIwMn0.XLflZNyo64aJEAS61mmNvuvpB5RP6iivHchn-dHiYto";
+const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-let supabase;
-
-window.onload = () => {
-  supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-  // AUTH
-  window.signUp = async function () {
-    const email = document.getElementById("auth-email").value;
-    const password = document.getElementById("auth-password").value;
-    const { error } = await supabase.auth.signUp({ email, password });
-    document.getElementById("auth-status").textContent = error ? error.message : "Check your email to confirm.";
-  };
-
-  window.signIn = async function () {
-    const email = document.getElementById("auth-email").value;
-    const password = document.getElementById("auth-password").value;
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) {
-      document.getElementById("auth-status").textContent = error.message;
-    } else {
-      document.getElementById("auth-section").style.display = "none";
-      document.getElementById("user-dashboard").style.display = "block";
-      document.getElementById("user-email").textContent = email;
-      loadCampaigns();
+// Load influencers from Supabase
+async function loadInfluencers() {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/influencers?select=*`, {
+    headers: {
+      apikey: SUPABASE_KEY,
+      Authorization: `Bearer ${SUPABASE_KEY}`
     }
-  };
+  });
+  const influencers = await res.json();
+  displayInfluencers(influencers);
+}
 
-  window.signOut = function () {
-    supabase.auth.signOut();
-    document.getElementById("auth-section").style.display = "block";
-    document.getElementById("user-dashboard").style.display = "none";
-    document.getElementById("user-email").textContent = "User";
-  };
-
-  // CAMPAIGNS
-  window.saveCampaign = async function () {
-    const title = document.getElementById("campaign-title").value;
-    const objective = document.getElementById("campaign-objective").value;
-    const brief = document.getElementById("campaign-brief").value;
-
-    const { data: { user } } = await supabase.auth.getUser();
-    const { error } = await supabase.from("campaigns").insert([{ user_id: user.id, title, objective, brief }]);
-
-    if (error) alert("Error saving campaign: " + error.message);
-    else {
-      alert("Campaign saved!");
-      loadCampaigns();
-    }
-  };
-
-  async function loadCampaigns() {
-    const { data: { user } } = await supabase.auth.getUser();
-    const { data, error } = await supabase.from("campaigns").select("*").eq("user_id", user.id).order("created_at", { ascending: false });
-
-    const list = document.getElementById("campaign-list");
-    list.innerHTML = error ? "<li>Error loading campaigns.</li>" : "";
-    if (data) data.forEach((c) => {
-      const item = document.createElement("li");
-      item.textContent = `${c.title} – ${c.objective}`;
-      list.appendChild(item);
-    });
-  }
-
-  // INFLUENCERS
-  async function loadInfluencers() {
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/influencers?select=*`, {
-      headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` }
-    });
-    const data = await res.json();
-    if (Array.isArray(data)) displayInfluencers(data);
-    else console.error("Expected array but got:", data);
-  }
-
-// Display influencers with checkboxes and status selectors
+// Display influencers in the discovery table
 function displayInfluencers(influencers) {
   const table = document.getElementById("influencer-table");
   if (!table) return;
@@ -107,7 +48,7 @@ function displayInfluencers(influencers) {
   });
 }
 
-// Save selected influencers and statuses to current campaign
+// Save selected influencers to campaign
 window.saveSelectedInfluencers = async function () {
   const checkboxes = document.querySelectorAll(".influencer-check:checked");
   const { data } = await client.auth.getSession();
@@ -139,9 +80,27 @@ window.saveSelectedInfluencers = async function () {
   } else {
     alert("Influencers attached to campaign!");
   }
-}
+};
 
-// Show editable outreach progress with dropdowns
+// Update outreach status live
+window.updateInfluencerStatus = async function (selectEl) {
+  const id = selectEl.getAttribute("data-id");
+  const newStatus = selectEl.value;
+
+  const { error } = await client
+    .from("campaign_influencers")
+    .update({ status: newStatus })
+    .eq("id", id);
+
+  if (error) {
+    alert("Failed to update status.");
+    console.error(error);
+  } else {
+    console.log("Status updated for ID:", id);
+  }
+};
+
+// Load outreach data for campaign
 async function loadCampaignInfluencers(campaignId) {
   const { data, error } = await client
     .from("campaign_influencers")
@@ -167,50 +126,24 @@ async function loadCampaignInfluencers(campaignId) {
   });
 }
 
-// Update status in Supabase when dropdown is changed
-async function updateInfluencerStatus(selectEl) {
-  const id = selectEl.getAttribute("data-id");
-  const newStatus = selectEl.value;
+// Load session and campaigns on page load
+window.onload = function () {
+  loadInfluencers();
 
-  const { error } = await client
-    .from("campaign_influencers")
-    .update({ status: newStatus })
-    .eq("id", id);
+  client.auth.getSession().then(({ data }) => {
+    const user = data.session?.user;
+    if (user) {
+      document.getElementById("auth-section").style.display = "none";
+      document.getElementById("user-dashboard").style.display = "block";
+      document.getElementById("user-email").innerText = user.email;
 
-  if (error) {
-    alert("Failed to update status.");
-    console.error(error);
-  } else {
-    console.log("Status updated for ID:", id);
-  }
-}
-
-  // OUTREACH
-  window.openOutreachForm = function (influencerId, name) {
-    document.getElementById("outreach-modal").style.display = "block";
-    document.getElementById("outreach-influencer-id").value = influencerId;
-    document.getElementById("outreach-influencer-name").textContent = name;
-  };
-
-  window.closeOutreachForm = function () {
-    document.getElementById("outreach-modal").style.display = "none";
-  };
-
-  window.submitOutreach = async function () {
-    const influencerId = document.getElementById("outreach-influencer-id").value;
-    const contactMethod = document.getElementById("outreach-method").value;
-    const notes = document.getElementById("outreach-notes").value;
-    const status = document.getElementById("outreach-status").value;
-
-    const { data: { user } } = await supabase.auth.getUser();
-    const { error } = await supabase.from("outreach").insert([{ user_id: user.id, influencer_id: influencerId, contact_method: contactMethod, notes, status }]);
-
-    if (error) alert("Failed to log outreach: " + error.message);
-    else {
-      alert("Outreach logged!");
-      closeOutreachForm();
+      client.from("campaigns").select("id").eq("user_id", user.id).order("created_at", { ascending: false }).limit(1)
+        .then(({ data }) => {
+          const campaign = data?.[0];
+          if (campaign) {
+            loadCampaignInfluencers(campaign.id);
+          }
+        });
     }
-  };
-
-  loadInfluencers(); // now safely runs after supabase init
+  });
 };
