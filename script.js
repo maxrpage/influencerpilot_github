@@ -75,26 +75,72 @@ window.onload = () => {
     else console.error("Expected array but got:", data);
   }
 
-  function displayInfluencers(influencers) {
-    const table = document.getElementById("influencer-table");
-    if (!table) return;
-    table.innerHTML = `
+// Display influencers with checkboxes and status selectors
+function displayInfluencers(influencers) {
+  const table = document.getElementById("influencer-table");
+  if (!table) return;
+  table.innerHTML = `
+    <tr>
+      <th>Select</th>
+      <th>Name</th><th>Platform</th><th>Followers</th><th>Engagement</th><th>Niche</th><th>Location</th><th>Status</th>
+    </tr>`;
+  influencers.forEach((inf) => {
+    const row = `
       <tr>
-        <th>Name</th><th>Platform</th><th>Followers</th><th>Engagement</th><th>Niche</th><th>Location</th><th>Outreach</th>
+        <td><input type="checkbox" class="influencer-check" data-id="${inf.id}"></td>
+        <td>${inf.name}</td>
+        <td>${inf.platform}</td>
+        <td>${inf.followers}</td>
+        <td>${(inf.engagement_rate * 100).toFixed(1)}%</td>
+        <td>${inf.niche}</td>
+        <td>${inf.location}</td>
+        <td>
+          <select class="status-select" data-id="${inf.id}">
+            <option value="Not Contacted">Not Contacted</option>
+            <option value="Emailed">Emailed</option>
+            <option value="Negotiating">Negotiating</option>
+            <option value="Confirmed">Confirmed</option>
+          </select>
+        </td>
       </tr>`;
-    influencers.forEach((inf) => {
-      table.innerHTML += `
-        <tr>
-          <td>${inf.name}</td>
-          <td>${inf.platform}</td>
-          <td>${inf.followers}</td>
-          <td>${(inf.engagement_rate * 100).toFixed(1)}%</td>
-          <td>${inf.niche}</td>
-          <td>${inf.location}</td>
-          <td><button class="btn" onclick="openOutreachForm('${inf.id}', '${inf.name}')">Log Outreach</button></td>
-        </tr>`;
+    table.innerHTML += row;
+  });
+}
+
+// Save selected influencers and statuses to current campaign
+async function saveSelectedInfluencers() {
+  const checkboxes = document.querySelectorAll(".influencer-check:checked");
+  const { data } = await client.auth.getSession();
+  const user = data.session?.user;
+  if (!user) return alert("You must be logged in.");
+
+  const { data: campaigns } = await client.from("campaigns").select("id").eq("user_id", user.id).order("created_at", { ascending: false }).limit(1);
+  const campaign = campaigns?.[0];
+  if (!campaign) return alert("No campaign found.");
+
+  const inserts = [];
+
+  checkboxes.forEach(cb => {
+    const id = cb.getAttribute("data-id");
+    const status = document.querySelector(`.status-select[data-id="${id}"]`).value;
+    inserts.push({
+      campaign_id: campaign.id,
+      influencer_id: id,
+      status
     });
+  });
+
+  if (inserts.length === 0) return alert("Select at least one influencer.");
+
+  const { error } = await client.from("campaign_influencers").insert(inserts);
+  if (error) {
+    console.error(error);
+    alert("Failed to attach influencers.");
+  } else {
+    alert("Influencers attached to campaign!");
   }
+}
+
 
   // OUTREACH
   window.openOutreachForm = function (influencerId, name) {
