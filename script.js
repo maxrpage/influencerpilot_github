@@ -109,33 +109,25 @@ async function loadCampaignInfluencers(campaignId) {
   const list = document.getElementById("campaign-influencer-list");
   if (!list) return;
   list.innerHTML = "";
-
-  if (error) {
-    list.innerHTML = "<li>Error loading outreach data.</li>";
-    return;
-  }
+  if (error) return (list.innerHTML = "<li>Error loading outreach data.</li>");
 
   data.forEach(entry => {
     const li = document.createElement("li");
-
     if (!entry.influencer) {
       li.innerHTML = `<em>Influencer missing or deleted</em>`;
     } else {
       li.innerHTML = `
-        <strong>${entry.influencer.name}</strong> (${entry.influencer.platform}) –
-        <select onchange="updateInfluencerStatus(this)" data-id="${entry.id}">
-          <option value="Not Contacted" ${entry.status === "Not Contacted" ? "selected" : ""}>Not Contacted</option>
-          <option value="Emailed" ${entry.status === "Emailed" ? "selected" : ""}>Emailed</option>
-          <option value="Negotiating" ${entry.status === "Negotiating" ? "selected" : ""}>Negotiating</option>
-          <option value="Confirmed" ${entry.status === "Confirmed" ? "selected" : ""}>Confirmed</option>
-        </select>
-      `;
-    }
-
+        <strong>${entry.influencer.name}</strong> (${entry.influencer.platform}) –`
+      <select onchange="updateInfluencerStatus(this)" data-id="${entry.id}">
+        <option value="Not Contacted" ${entry.status === "Not Contacted" ? "selected" : ""}>Not Contacted</option>
+        <option value="Emailed" ${entry.status === "Emailed" ? "selected" : ""}>Emailed</option>
+        <option value="Negotiating" ${entry.status === "Negotiating" ? "selected" : ""}>Negotiating</option>
+        <option value="Confirmed" ${entry.status === "Confirmed" ? "selected" : ""}>Confirmed</option>
+      </select>
+    `;
     list.appendChild(li);
   });
 }
-
 
 // Export outreach progress as CSV
 window.exportCampaignCSV = async function () {
@@ -263,3 +255,37 @@ async function loadCampaignSummary(campaignId) {
     </ul>
   `;
 }
+
+
+// Load and display top recommended influencers
+async function loadRecommendedInfluencers() {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/influencers?select=*`, {
+    headers: {
+      apikey: SUPABASE_KEY,
+      Authorization: `Bearer ${SUPABASE_KEY}`
+    }
+  });
+
+  const data = await res.json();
+  const top = data
+    .map(inf => ({
+      ...inf,
+      score: (inf.engagement_rate * 2) + (inf.followers / 1000)
+    }))
+    .sort((a, b) => b.score - a.score)
+    .slice(0, 5);
+
+  const list = document.getElementById("recommendation-list");
+  if (!list) return;
+
+  list.innerHTML = top.map(inf =>
+    `<li><strong>${inf.name}</strong> (${inf.platform}) – ${Math.round(inf.followers)} followers, ${Math.round(inf.engagement_rate * 100)}% engagement</li>`
+  ).join('');
+}
+
+
+window.onload = async () => {
+  await loadInfluencers();
+  await populateInfluencerDropdown();
+  await loadRecommendedInfluencers();
+};

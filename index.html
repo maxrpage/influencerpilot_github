@@ -43,9 +43,16 @@
       <select id="email-influencer-select"></select>
       <button onclick="generateOutreachEmail()">Generate Email</button>
       <pre id="email-output" style="background: #f4f4f4; padding: 1em;"></pre>
+    
+    </section>
+
+    <section>
+      <h4>🤖 Recommended Influencers</h4>
+      <ul id="recommendation-list">Loading...</ul>
     </section>
 
     <button onclick="exportCampaignCSV()">Export Outreach CSV</button>
+    
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
