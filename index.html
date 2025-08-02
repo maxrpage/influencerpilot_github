@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>InfluencerPilot Dashboard</title>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+  <div id="auth-section">
+    <h2>Welcome to InfluencerPilot</h2>
+    <button onclick="client.auth.signInWithOAuth({ provider: 'google' })">Log in with Google</button>
+  </div>
+
+  <div id="user-dashboard" style="display: none;">
+    <h3>Hello, <span id="user-email"></span></h3>
+
+    <section>
+      <h4>Discover Influencers</h4>
+      <table id="influencer-table"></table>
+      <select id="status-select">
+        <option value="Not Contacted">Not Contacted</option>
+        <option value="Emailed">Emailed</option>
+        <option value="Negotiating">Negotiating</option>
+        <option value="Confirmed">Confirmed</option>
+      </select>
+      <button onclick="saveSelectedInfluencers()">Attach to Campaign</button>
+    </section>
+
+    <section>
+      <h4>Outreach Progress</h4>
+      <ul id="campaign-influencer-list"></ul>
+    </section>
+
+    <section>
+      <h4>📈 Campaign Summary</h4>
+      <div id="summary-metrics">Loading...</div>
+    </section>
+
+    <section>
+      <h4>📩 Outreach Email Generator</h4>
+      <label for="email-influencer-select">Choose Influencer:</label>
+      <select id="email-influencer-select"></select>
+      <button onclick="generateOutreachEmail()">Generate Email</button>
+      <pre id="email-output" style="background: #f4f4f4; padding: 1em;"></pre>
+    </section>
+
+    <button onclick="exportCampaignCSV()">Export Outreach CSV</button>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <script src="script.js" defer></script>
+</body>
+</html>
