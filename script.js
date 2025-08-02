@@ -147,3 +147,5 @@ window.onload = function () {
     }
   });
 };
+
+<button onclick="exportCampaignCSV()">Export Outreach CSV</button>
