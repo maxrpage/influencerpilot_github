@@ -141,6 +141,49 @@ async function saveSelectedInfluencers() {
   }
 }
 
+// Show editable outreach progress with dropdowns
+async function loadCampaignInfluencers(campaignId) {
+  const { data, error } = await client
+    .from("campaign_influencers")
+    .select("id, status, influencer:influencer_id(name, platform)")
+    .eq("campaign_id", campaignId);
+
+  const list = document.getElementById("campaign-influencer-list");
+  list.innerHTML = "";
+  if (error) return (list.innerHTML = "<li>Error loading outreach data.</li>");
+
+  data.forEach(entry => {
+    const li = document.createElement("li");
+    li.innerHTML = `
+      <strong>${entry.influencer.name}</strong> (${entry.influencer.platform}) –
+      <select onchange="updateInfluencerStatus(this)" data-id="${entry.id}">
+        <option value="Not Contacted" ${entry.status === "Not Contacted" ? "selected" : ""}>Not Contacted</option>
+        <option value="Emailed" ${entry.status === "Emailed" ? "selected" : ""}>Emailed</option>
+        <option value="Negotiating" ${entry.status === "Negotiating" ? "selected" : ""}>Negotiating</option>
+        <option value="Confirmed" ${entry.status === "Confirmed" ? "selected" : ""}>Confirmed</option>
+      </select>
+    `;
+    list.appendChild(li);
+  });
+}
+
+// Update status in Supabase when dropdown is changed
+async function updateInfluencerStatus(selectEl) {
+  const id = selectEl.getAttribute("data-id");
+  const newStatus = selectEl.value;
+
+  const { error } = await client
+    .from("campaign_influencers")
+    .update({ status: newStatus })
+    .eq("id", id);
+
+  if (error) {
+    alert("Failed to update status.");
+    console.error(error);
+  } else {
+    console.log("Status updated for ID:", id);
+  }
+}
 
   // OUTREACH
   window.openOutreachForm = function (influencerId, name) {
