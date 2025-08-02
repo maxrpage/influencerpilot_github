@@ -113,8 +113,11 @@ async function loadCampaignInfluencers(campaignId) {
 
   data.forEach(entry => {
     const li = document.createElement("li");
-    li.innerHTML = `
-      <strong>${entry.influencer.name}</strong> (${entry.influencer.platform}) –
+    if (!entry.influencer) {
+      li.innerHTML = `<em>Influencer missing or deleted</em>`;
+    } else {
+      li.innerHTML = `
+        <strong>${entry.influencer.name}</strong> (${entry.influencer.platform}) –`
       <select onchange="updateInfluencerStatus(this)" data-id="${entry.id}">
         <option value="Not Contacted" ${entry.status === "Not Contacted" ? "selected" : ""}>Not Contacted</option>
         <option value="Emailed" ${entry.status === "Emailed" ? "selected" : ""}>Emailed</option>

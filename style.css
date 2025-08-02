@@ -1,6 +1,11 @@
 body {
-  font-family: Arial, sans-serif;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #f7f9fc;
+  color: #333;
   padding: 2em;
+}
+h3, h4 {
+  color: #2a2a2a;
 }
 table, th, td {
   border: 1px solid #ccc;
@@ -10,9 +15,24 @@ table, th, td {
 table {
   width: 100%;
   margin-bottom: 1em;
+  background-color: #fff;
 }
 button {
   margin-top: 1em;
   padding: 0.5em 1em;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 6px;
   cursor: pointer;
+}
+button:hover {
+  background-color: #0056b3;
+}
+select {
+  padding: 4px;
+}
+pre {
+  background-color: #eef;
+  border-left: 3px solid #007bff;
 }
